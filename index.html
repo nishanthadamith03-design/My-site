@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>XIA TECH</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 🔥 SEO -->
+<meta name="description" content="Xia Tech shares the best Android apps, AI tools, tech tips, smart websites and easy tutorials. Discover powerful apps and modern technology tricks.">
+<meta name="keywords" content="Android apps, AI tools, tech tips, AI websites, smartphone tricks, Xia Tech">
+<meta name="author" content="Xia Tech">
+
+<!-- 🔥 Open Graph -->
+<meta property="og:title" content="XIA TECH">
+<meta property="og:description" content="Best Android apps, AI tools and smart tech tutorials.">
+<meta property="og:type" content="website">
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#0f0f0f,#1a1a1a);
+    color:white;
+}
+
+/* 🔥 Premium Navbar */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 30px;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(10px);
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.navbar h2{
+    color:cyan;
+    margin:0;
+}
+
+.nav-links a{
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
+    transition:0.3s;
+}
+
+.nav-links a:hover{
+    color:cyan;
+}
+
+/* Hero */
+.hero{
+    text-align:center;
+    padding:40px 20px;
+}
+
+.hero h1{
+    font-size:36px;
+    text-shadow:0 0 20px cyan;
+}
+
+/* 🔴 YouTube Button */
+.yt-button{
+    background:linear-gradient(45deg,#ff0000,#cc0000);
+    padding:12px 30px;
+    border-radius:30px;
+    text-decoration:none;
+    color:white;
+    display:inline-block;
+    margin-top:15px;
+    box-shadow:0 0 20px red;
+    transition:0.3s;
+}
+
+.yt-button:hover{
+    transform:scale(1.1);
+}
+
+/* Subscriber Counter */
+.sub-count{
+    margin-top:15px;
+    font-size:18px;
+    color:cyan;
+}
+
+/* Sections */
+.section{
+    padding:30px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:rgba(255,255,255,0.05);
+    border-radius:15px;
+    overflow:hidden;
+    cursor:pointer;
+    transition:0.3s;
+    backdrop-filter:blur(10px);
+}
+
+.card:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 20px cyan;
+}
+
+.card img{
+    width:100%;
+}
+
+.card h3{
+    padding:10px;
+    font-size:15px;
+}
+
+/* Modal */
+.modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.9);
+    justify-content:center;
+    align-items:center;
+}
+
+.modal iframe{
+    width:90%;
+    height:70%;
+}
+
+.close{
+    position:absolute;
+    top:20px;
+    right:30px;
+    font-size:30px;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🔥 Navbar -->
+<div class="navbar">
+    <h2>XIA TECH</h2>
+    <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#latest">Latest</a>
+        <a href="#popular">Popular</a>
+        <a href="https://www.youtube.com/@Xia-Tech" target="_blank">YouTube</a>
+    </div>
+</div>
+
+<!-- 🔥 Hero Section -->
+<div class="hero">
+    <h1>Welcome to Xia Tech</h1>
+    <p>Best Android Apps • AI Tools • Smart Tech Tutorials</p>
+
+    <a href="https://www.youtube.com/@Xia-Tech" target="_blank" class="yt-button">
+        ▶ Visit My Channel
+    </a>
+
+    <div class="sub-count">
+        Subscribers: <span id="subs">Loading...</span>
+    </div>
+</div>
+
+<!-- Latest -->
+<div class="section">
+<h2 id="latest">🔥 Latest Videos</h2>
+<div id="latestVideos" class="grid"></div>
+</div>
+
+<!-- Popular -->
+<div class="section">
+<h2 id="popular">👑 Most Viewed</h2>
+<div id="popularVideos" class="grid"></div>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal">
+<span class="close" onclick="closeModal()">✖</span>
+<iframe id="player" frameborder="0" allowfullscreen></iframe>
+</div>
+
+<script>
+const API_KEY = "AIzaSyCWiKqufjpGxo528YhxQhXP_dB-cNsxkwQ";
+const CHANNEL_ID = "UCM480ctU_AFGkp8q3eOYOzA";
+
+async function fetchSubscribers(){
+    const url=`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${CHANNEL_ID}&key=${API_KEY}`;
+    const res=await fetch(url);
+    const data=await res.json();
+    const subs=data.items[0].statistics.subscriberCount;
+    document.getElementById("subs").innerText=Number(subs).toLocaleString();
+}
+fetchSubscribers();
+
+async function fetchVideos(order, containerId){
+    const url=`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=${order}&maxResults=6`;
+    const res=await fetch(url);
+    const data=await res.json();
+    const container=document.getElementById(containerId);
+    container.innerHTML="";
+    data.items.forEach(item=>{
+        if(item.id.videoId){
+            container.innerHTML+=`
+            <div class="card" onclick="openModal('${item.id.videoId}')">
+                <img src="${item.snippet.thumbnails.medium.url}">
+                <h3>${item.snippet.title}</h3>
+            </div>`;
+        }
+    });
+}
+
+function openModal(id){
+    document.getElementById("modal").style.display="flex";
+    document.getElementById("player").src=`https://www.youtube.com/embed/${id}?autoplay=1`;
+}
+
+function closeModal(){
+    document.getElementById("modal").style.display="none";
+    document.getElementById("player").src="";
+}
+
+fetchVideos("date","latestVideos");
+fetchVideos("viewCount","popularVideos");
+</script>
+
+</body>
+</html>
