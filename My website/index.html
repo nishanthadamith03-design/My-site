@@ -1,1 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xia Tech V2.7.1</title>
+<style>
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#111;
+  color:white;
+  transition: background 0.3s, color 0.3s;
+}
 
+/* Header */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 20px;
+  background:#000;
+  border-bottom:2px solid #444;
+  position:sticky;
+  top:0;
+  z-index:10;
+  border-radius:5px;
+}
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.header-left img{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:#333;
+  border:2px solid #666;
+}
+.header-left .channel-name{
+  font-size:20px;
+  font-weight:bold;
+}
+.header-left .sub-count{
+  margin-left:10px;
+}
+
+/* Subscriber bar */
+.subscriber-bar{
+  display:flex;
+  overflow-x:auto;
+  gap:10px;
+  padding:5px 20px;
+  background:#111;
+}
+.subscriber-bar .subscriber{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  width:60px;
+  font-size:10px;
+  border:1px solid #555;
+  padding:5px;
+  border-radius:5px;
+  transition: transform 0.3s;
+}
+.subscriber-bar .subscriber:hover{
+  transform:scale(1.1);
+}
+.subscriber-bar .subscriber img{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:#333;
+  border:1px solid #666;
+}
+
+/* Slider and Video Cards */
+.slider-container{
+  position:relative;
+  overflow:hidden;
+  margin:20px;
+}
+.slider{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  scroll-behavior:smooth;
+}
+.slider .video-card{
+  flex-shrink:0;
+  width:300px;
+  height:170px;
+  border-radius:10px;
+  background:#222;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:14px;
+  border:2px solid #555;
+  cursor:pointer;
+  transition: transform 0.3s;
+}
+.slider .video-card:hover{
+  transform:scale(1.05);
+}
+
+/* Slider navigation buttons */
+.nav-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background:none;
+  border:none;
+  cursor:pointer;
+  z-index:5;
+}
+.nav-btn img{
+  width:40px;
+  height:40px;
+}
+.left-btn{left:5px;}
+.right-btn{right:5px;}
+
+/* Video Popup */
+#videoPopup{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.9);
+  display:none;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:100;
+  padding:20px;
+}
+#videoPopup .popup-content{
+  background:#111;
+  padding:20px;
+  border-radius:10px;
+  max-width:90%;
+  max-height:90%;
+  overflow-y:auto;
+  border:2px solid #555;
+  transition: transform 0.3s;
+}
+#videoPopup .popup-content img{
+  width:100%;
+  max-height:300px;
+  border-radius:10px;
+  border:1px solid #666;
+}
+#videoPopup button.close-btn{
+  position:absolute;
+  top:20px;
+  right:20px;
+  width:40px;
+  height:40px;
+  background:none;
+  border:none;
+  cursor:pointer;
+}
+.video-info{
+  margin-top:10px;
+}
+.video-info div{
+  margin:5px 0;
+}
+
+/* Placeholder for upcoming V2.8 features */
+#futureFeatures{
+  margin:20px;
+  padding:10px;
+  border:2px dashed #666;
+  border-radius:10px;
+  color:#aaa;
+  text-align:center;
+}
+</style>
+</head>
+<body>
+
+<!-- Subscriber Bar -->
+<div class="subscriber-bar" id="subscriberBar">
+  <div class="subscriber"><img src=""><span>User1</span></div>
+  <div class="subscriber"><img src=""><span>User2</span></div>
+  <div class="subscriber"><img src=""><span>User3</span></div>
+  <div class="subscriber"><img src=""><span>User4</span></div>
+</div>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <img src="" alt="Logo">
+    <div class="channel-name">Xia Tech</div>
+    <div class="sub-count">1,234,567 subscribers</div>
+  </div>
+  <div class="header-right">
+    <button id="modeToggle">🌙</button>
+  </div>
+</div>
+
+<!-- Playlist Section Example -->
+<h2 style="margin-left:20px;">Gaming Playlist</h2>
+<div class="slider-container">
+  <button class="nav-btn left-btn" onclick="scrollSlider('gaming', -320)"><img src="" alt="Left"></button>
+  <div class="slider" id="gaming">
+    <div class="video-card" onclick="openPopup('My kills')">My kills</div>
+    <div class="video-card" onclick="openPopup('My aces')">My aces</div>
+  </div>
+  <button class="nav-btn right-btn" onclick="scrollSlider('gaming', 320)"><img src="" alt="Right"></button>
+</div>
+
+<h2 style="margin-left:20px;">Xx Playlist</h2>
+<div class="slider-container">
+  <button class="nav-btn left-btn" onclick="scrollSlider('xx', -320)"><img src="" alt="Left"></button>
+  <div class="slider" id="xx">
+    <div class="video-card" onclick="openPopup('SSD')">SSD</div>
+    <div class="video-card" onclick="openPopup('Video 3')">Video 3</div>
+  </div>
+  <button class="nav-btn right-btn" onclick="scrollSlider('xx', 320)"><img src="" alt="Right"></button>
+</div>
+
+<!-- Video Popup -->
+<div id="videoPopup">
+  <div class="popup-content">
+    <img src="" alt="Thumbnail">
+    <div class="video-info">
+      <div>Title: <span id="videoTitle">Sample Video</span></div>
+      <div>Likes: 1234</div>
+      <div>Views: 5678</div>
+      <div>Comments: 12</div>
+      <div>Description: This is a sample video description.</div>
+    </div>
+  </div>
+  <button class="close-btn" onclick="closePopup()">✖️</button>
+</div>
+
+<!-- Placeholder for upcoming V2.8 features -->
+<div id="futureFeatures">
+  🔹 Search & Filter<br>
+  🔹 Categories / Tabs<br>
+  🔹 Mini Player<br>
+  🔹 Comment Preview<br>
+  🔹 Subscriber Interaction Animations<br>
+  🔹 Analytics Panel<br>
+  🔹 Animations & Effects<br>
+  *(Coming in V2.8)*
+</div>
+
+<script>
+// Dark/Light toggle
+const toggle = document.getElementById('modeToggle');
+toggle.addEventListener('click',()=>{
+  if(document.body.style.backgroundColor=='#111'){
+    document.body.style.backgroundColor='#fff';
+    document.body.style.color='#000';
+    toggle.textContent='☀️';
+  }else{
+    document.body.style.backgroundColor='#111';
+    document.body.style.color='#fff';
+    toggle.textContent='🌙';
+  }
+});
+
+// Slider scroll
+function scrollSlider(id, value){
+  const slider=document.getElementById(id);
+  slider.scrollBy({left:value, behavior:'smooth'});
+}
+
+// Video popup
+function openPopup(title){
+  document.getElementById('videoTitle').textContent=title;
+  document.getElementById('videoPopup').style.display='flex';
+}
+function closePopup(){
+  document.getElementById('videoPopup').style.display='none';
+}
+
+// Placeholder subscriber auto-update (simulate)
+setInterval(()=>{
+  const bar=document.getElementById('subscriberBar');
+  const div=document.createElement('div');
+  div.className='subscriber';
+  div.innerHTML='<img src=""><span>User'+Math.floor(Math.random()*1000)+'</span>';
+  bar.appendChild(div);
+},10000);
+</script>
+
+</body>
+</html>
